@@ -1,0 +1,90 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLDBTool", "SQLDBTool\SQLDBTool.csproj", "{3E0BEC54-2F3C-4C9B-BC20-E71B63DDB9FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessDBTool", "AccessDBTool\AccessDBTool.csproj", "{76A1A0A9-C84A-409A-8655-2F62464C889E}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebSite", "WebSite", "{B6B3A33D-8195-428C-B601-8B6ABD60D039}"
+	ProjectSection(WebsiteProperties) = preProject
+		SccProjectName = "SAK"
+		SccAuxPath = "SAK"
+		SccLocalPath = "SAK"
+		SccProvider = "SAK"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		ProjectReferences = ""
+		Debug.AspNetCompiler.VirtualPath = "/WebSite"
+		Debug.AspNetCompiler.PhysicalPath = "WebSite\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\WebSite\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/WebSite"
+		Release.AspNetCompiler.PhysicalPath = "WebSite\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\WebSite\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "2151"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFNetLib40", "..\WFNetLib40\WFNetLib40.csproj", "{FF8FFA8D-5A95-4BCE-877D-00DF5076A2F4}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs33
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = SQLDBTool\\SQLDBTool.csproj
+		SccProjectName1 = SQLDBTool
+		SccLocalPath1 = SQLDBTool
+		SccProjectUniqueName2 = AccessDBTool\\AccessDBTool.csproj
+		SccProjectName2 = AccessDBTool
+		SccLocalPath2 = AccessDBTool
+		SccWebProject3 = true
+		SccProjectUniqueName3 = WebSite
+		SccProjectName3 = WebSite
+		SccLocalPath3 = WebSite
+		SccProjectEnlistmentChoice3 = 2
+		SccProjectUniqueName4 = ..\\WFNetLib40\\WFNetLib40.csproj
+		SccProjectName4 = ../WFNetLib40
+		SccLocalPath4 = ..\\WFNetLib40
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		NET35|Any CPU = NET35|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3E0BEC54-2F3C-4C9B-BC20-E71B63DDB9FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E0BEC54-2F3C-4C9B-BC20-E71B63DDB9FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E0BEC54-2F3C-4C9B-BC20-E71B63DDB9FD}.NET35|Any CPU.ActiveCfg = Release|Any CPU
+		{3E0BEC54-2F3C-4C9B-BC20-E71B63DDB9FD}.NET35|Any CPU.Build.0 = Release|Any CPU
+		{3E0BEC54-2F3C-4C9B-BC20-E71B63DDB9FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E0BEC54-2F3C-4C9B-BC20-E71B63DDB9FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76A1A0A9-C84A-409A-8655-2F62464C889E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76A1A0A9-C84A-409A-8655-2F62464C889E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76A1A0A9-C84A-409A-8655-2F62464C889E}.NET35|Any CPU.ActiveCfg = Release|Any CPU
+		{76A1A0A9-C84A-409A-8655-2F62464C889E}.NET35|Any CPU.Build.0 = Release|Any CPU
+		{76A1A0A9-C84A-409A-8655-2F62464C889E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76A1A0A9-C84A-409A-8655-2F62464C889E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6B3A33D-8195-428C-B601-8B6ABD60D039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6B3A33D-8195-428C-B601-8B6ABD60D039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6B3A33D-8195-428C-B601-8B6ABD60D039}.NET35|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6B3A33D-8195-428C-B601-8B6ABD60D039}.NET35|Any CPU.Build.0 = Debug|Any CPU
+		{B6B3A33D-8195-428C-B601-8B6ABD60D039}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6B3A33D-8195-428C-B601-8B6ABD60D039}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{FF8FFA8D-5A95-4BCE-877D-00DF5076A2F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF8FFA8D-5A95-4BCE-877D-00DF5076A2F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF8FFA8D-5A95-4BCE-877D-00DF5076A2F4}.NET35|Any CPU.ActiveCfg = NET35|Any CPU
+		{FF8FFA8D-5A95-4BCE-877D-00DF5076A2F4}.NET35|Any CPU.Build.0 = NET35|Any CPU
+		{FF8FFA8D-5A95-4BCE-877D-00DF5076A2F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF8FFA8D-5A95-4BCE-877D-00DF5076A2F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
