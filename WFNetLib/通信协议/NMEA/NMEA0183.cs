@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using System.Text;
 
 namespace WFNetLib.NMEA//美国国家海洋电子协会（National Marine Electronics Association ）

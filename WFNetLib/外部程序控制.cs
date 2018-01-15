@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using System.Text;
 using System.Diagnostics;
 
@@ -20,7 +20,10 @@ namespace WFNetLib
 
         public static void CloseProcess(string processName)
         {
-            Process process = Process.GetProcessesByName(processName).FirstOrDefault();
+            Process[] processList=Process.GetProcessesByName(processName);
+            if (processList == null)
+                return;
+            Process process = processList[0]; 
             process.CloseMainWindow();
             //if (!result) process.Kill();
             if (Process.GetProcessesByName(processName).Length != 0)

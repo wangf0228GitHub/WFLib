@@ -185,78 +185,7 @@ namespace WFNetLib
         {
             MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
-        /// <summary>
-        /// 可选择使用 DES/RSA 双向加密函数
-        /// </summary>
-        /// <param name="str">待加密的字符串</param>
-        /// <param name="keyValue">对称加密密钥(密钥长度能且只能是8个字母) </param>
-        /// <param name="privateKeyFilePath">非对称加密的私钥文件地址</param>
-        /// <returns>string</returns>
-        public static string EncryptString(string str, string keyValue, string privateKeyFilePath)
-        {
-            string strResult = str;
-
-            if (!StringsFunction.CheckValiable(str)) return strResult;
-
-
-            // 判断是否指定了对称加密的密钥， 指定则采用 DES 对称加密算法进行加密
-            if (StringsFunction.CheckValiable(keyValue))
-            {
-                DESCrypto dc = new DESCrypto();
-                strResult = dc.EncryptString(strResult, keyValue, keyValue);
-            }
-
-
-            // 判断非对称加密的私钥文件是否指定，指定则使用非对称加密算法（RSA）对其进行二次加密
-            if (StringsFunction.CheckValiable(privateKeyFilePath))
-            {
-                string privateKey = FileOP.ReadFile(StringsFunction.GetRealFile(privateKeyFilePath));
-                Regex r = new Regex(@"<Modulus>(.*?)</Exponent>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                MatchCollection mc = r.Matches(privateKey);
-                string publicKey = "<RSAKeyValue><Modulus>" + mc[0].Groups[1].Value + "</Exponent></RSAKeyValue>";
-
-
-                RSACrypto rc = new RSACrypto();
-                strResult = rc.RSAEncrypt(publicKey, strResult);
-
-            }
-
-            return strResult;
-        }
-
-        /// <summary>
-        /// 可选择使用 DES/RSA 双向解密函数
-        /// </summary>
-        /// <param name="str">待解密的字符串</param>
-        /// <param name="privateKeyFilePath">非对称加密的私钥文件地址</param>
-        /// <param name="keyValue">对称加密密钥(密钥长度能且只能是8个字母)</param>
-        /// <returns>string</returns>
-        public static string DecryptString(string str, string privateKeyFilePath, string keyValue)
-        {
-            string strResult = str;
-
-            if (!StringsFunction.CheckValiable(str)) return strResult;
-
-
-            // 判断非对称加密的私钥文件是否指定，指定则使用非对称加密算法（RSA）对其进行解密
-            if (StringsFunction.CheckValiable(privateKeyFilePath))
-            {
-                string privateKey = FileOP.ReadFile(StringsFunction.GetRealFile(privateKeyFilePath));
-
-                RSACrypto rc = new RSACrypto();
-                strResult = rc.RSADecrypt(privateKey, strResult);
-            }
-
-
-            // 判断是否指定了对称加密的密钥， 指定则采用 DES 对称加密算法进行解密
-            if (StringsFunction.CheckValiable(keyValue))
-            {
-                DESCrypto dc = new DESCrypto();
-                strResult = dc.DecryptString(strResult, keyValue);
-            }
-
-            return strResult;
-        }
+        
         public static bool OpenSerialPort(ref SerialPort mySerialPort,string name)
         {
             while (true)
