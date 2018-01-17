@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WFNetLib</RootNamespace>
     <AssemblyName>WFNetLib</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -156,11 +156,11 @@
     <Compile Include="GSMModem\特殊模块\GTM900.cs" />
     <Compile Include="GSMModem\短信.cs" />
     <Compile Include="ini文件操作.cs" />
-    <Compile Include="JsonSerializeHelper.cs" />
     <Compile Include="PID\PID.cs" />
-    <Compile Include="Strings\StringEncrypt.cs" />
+    <Compile Include="SerializeHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="外部程序控制.cs" />
-    <Compile Include="SerializeHelper.cs" />
     <Compile Include="TCP\ClientContext.cs" />
     <Compile Include="TCP\DaemonThread.cs" />
     <Compile Include="TCP\Events.cs" />
@@ -177,11 +177,7 @@
     <Compile Include="数据包处理\easyStringPacket.cs" />
     <Compile Include="网站用函数.cs" />
     <Compile Include="网页相关\WFHttpWebResponse.cs" />
-    <Compile Include="微信公众平台\基础支持.cs" />
-    <Compile Include="微信公众平台\消息处理.cs" />
-    <Compile Include="微信公众平台\消息排重.cs" />
     <Compile Include="数据包处理\CP1616.cs" />
-    <Compile Include="数据包处理\JSON.cs" />
     <Compile Include="数据包处理\NetPacket.cs" />
     <Compile Include="电脑控制.cs" />
     <Compile Include="算法\最小二乘法拟合二元多次曲线.cs" />

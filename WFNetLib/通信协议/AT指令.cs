@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using System.Text;
 using System.IO.Ports;
 using System.Diagnostics;
@@ -29,7 +29,7 @@ namespace WFNetLib
                     RxList.Clear();
                     string str;
                     byte[] tx = Encoding.UTF8.GetBytes(at + "\r");
-                    Com.Write(tx, 0, tx.Count());
+                    Com.Write(tx, 0, tx.Length);
                     Com.Encoding = Encoding.UTF8;
                     while (true)
                     {
