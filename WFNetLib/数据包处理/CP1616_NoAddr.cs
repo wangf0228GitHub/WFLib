@@ -32,6 +32,7 @@ namespace WFNetLib.PacketProc
         public byte[] Data;
         public int RxCount;
         public byte[] RxList;
+		public static bool bVerify=true;
         public byte NeedCommand;
         public static Int32 BUFFER_SIZE = 1024;
         public CP1616_NoAddr_Packet(byte com)
@@ -130,11 +131,23 @@ namespace WFNetLib.PacketProc
                 {
                     if (Data[Data.Length - 1] == 0x0d)
                     {
-                        byte s1 = Verify.GetVerify_byteSum(Header.Data);
-                        byte s2 = Verify.GetVerify_byteSum(Data, Data.Length - 2);
-                        s1 = (byte)(s1 + s2);
-                        if (s1 == Data[Data.Length - 2])
-                            return true;
+						if (CP1616_NoAddr_Packet.bVerify)
+						{
+							byte s1 = Verify.GetVerify_byteSum(Header.Data);
+							byte s2 = Verify.GetVerify_byteSum(Data, Data.Length - 2);
+							s1 = (byte)(s1 + s2);
+							if (s1 == Data[Data.Length - 2])
+								return true;
+							else
+							{
+								RxCount = 0;
+								return false;
+							}
+						}
+						else
+						{
+							return true;
+						}
                     }
                     else
                     {

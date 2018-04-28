@@ -134,7 +134,7 @@ namespace WFNetLib.TCP
         /// <summary>
         /// 缓冲区大小1024字节
         /// </summary>
-        public static Int32 BUFFER_SIZE = 1024;
+        public static Int32 BUFFER_SIZE = 1024*10;
         ///
         /// 缓存
         ///

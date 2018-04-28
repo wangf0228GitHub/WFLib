@@ -22,8 +22,7 @@ namespace WFNetLib.TCP
         {
             while (m_thread.IsAlive)
             {
-                ClientContext[] clientList = null;
-                m_asyncSocketServer.ClientContextList.CopyList(ref clientList);
+				ClientContext[] clientList = m_asyncSocketServer.ClientContextList;
                 for (int i = 0; i < clientList.Length; i++)
                 {
                     if (!m_thread.IsAlive)

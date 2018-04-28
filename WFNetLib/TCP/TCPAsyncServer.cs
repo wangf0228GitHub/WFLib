@@ -45,7 +45,15 @@ namespace WFNetLib.TCP
 
         private ClientContextPool m_ClientContextPool;
         private ClientContextList m_ClientContextList;
-        public ClientContextList ClientContextList { get { return m_ClientContextList; } }
+		public ClientContext[] ClientContextList
+		{
+			get
+			{
+				ClientContext[] ClientList = null;
+				m_ClientContextList.CopyList(ref ClientList); 
+				return ClientList;
+			}
+		}
 
 //         private LogOutputSocketProtocolMgr m_logOutputSocketProtocolMgr;
 //         public LogOutputSocketProtocolMgr LogOutputSocketProtocolMgr { get { return m_logOutputSocketProtocolMgr; } }
