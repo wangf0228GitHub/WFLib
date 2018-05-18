@@ -10,6 +10,7 @@ using System.IO;
 using System.Web.Security;
 using System.Data;
 using Microsoft.VisualBasic;
+using System.Net;
 
 namespace WFNetLib.StringFunc
 {
@@ -1026,6 +1027,30 @@ namespace WFNetLib.StringFunc
 
                 return strResult;
             }
+			public static IPAddress CheckIPInput(string str)
+			{
+				string[] ips = str.Split('.');
+				int[] ipn = new int[4];
+				if (ips.Length != 4)
+				{
+					return null;
+				}
+				for (int i = 0; i < 4; i++)
+				{
+					if (int.TryParse(ips[i], out ipn[i]) == false)
+					{
+						return null;
+					}
+					if (ipn[i] > 255 || ipn[i] < 0)
+					{
+						return null;
+					}
+				}
+				byte[] ipb = new byte[4];
+				for (int i = 0; i < 4; i++)
+					ipb[i] = (byte)ipn[i];
+				return new IPAddress(ipb);
+			}
             public static byte[] strToHexByte(string hexString,string spilt)
             {                
                 if(spilt!="")
