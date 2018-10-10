@@ -39,6 +39,7 @@ namespace WFOffice2007
             string strTitle = "数据导出到Excel中";
             wp.Execute(wpf, strTitle, WFNetLib.WaitingType.With_ConfirmCancel, "确定要取消么？");
         }
+        public int SheetCount;
         private void Proc(object LockWatingThread)
         {
             Microsoft.Office.Interop.Excel.Application app = new Microsoft.Office.Interop.Excel.Application();

@@ -23,6 +23,10 @@ namespace WFNetLib.PacketProc
         public byte Command;
         public UInt16 Len = 0;
         public byte[] Data;
+        public static void CalcHeaderLen()
+        {
+            HEAD_SIZE = Addr_SIZE + DataLen_SIZE + CommandLen_SIZE + 2;
+        }
         public CP1616PacketHead()
         {
             Data=new byte[HEAD_SIZE];
@@ -57,17 +61,32 @@ namespace WFNetLib.PacketProc
         }
         public static byte[] MakeCP1616Packet(byte com, UInt16 addr, byte[] data)
         {
+            int nIndex=0;
             byte[] txbuffer;
             if(data!=null)
             {
                 txbuffer = new byte[CP1616PacketHead.HEAD_SIZE + data.Length + 2];
-                txbuffer[0] = 0x16;
-                txbuffer[1] = 0x16;
-                txbuffer[2] = BytesOP.GetHighByte(addr);
-                txbuffer[3] = BytesOP.GetLowByte(addr);
-                txbuffer[4] = com;
-                txbuffer[5] = BytesOP.GetHighByte((UInt16)data.Length);
-                txbuffer[6] = BytesOP.GetLowByte((UInt16)data.Length);
+                txbuffer[nIndex++] = 0x16;
+                txbuffer[nIndex++] = 0x16;
+                if(CP1616PacketHead.Addr_SIZE==2)
+                {
+                    txbuffer[nIndex++] = BytesOP.GetHighByte(addr);
+                    txbuffer[nIndex++] = BytesOP.GetLowByte(addr);
+                }
+                else if (CP1616PacketHead.Addr_SIZE == 1)
+                {
+                    txbuffer[nIndex++] = BytesOP.GetLowByte(addr);
+                }
+                txbuffer[nIndex++] = com;
+                if(CP1616PacketHead.DataLen_SIZE==2)
+                {
+                    txbuffer[nIndex++] = BytesOP.GetHighByte((UInt16)data.Length);
+                    txbuffer[nIndex++] = BytesOP.GetLowByte((UInt16)data.Length);
+                }
+                else
+                {
+                    txbuffer[nIndex++] = BytesOP.GetLowByte((UInt16)data.Length);
+                }
                 for (int i = 0; i < data.Length; i++)
                 {
                     txbuffer[i + CP1616PacketHead.HEAD_SIZE] = data[i];
@@ -78,13 +97,27 @@ namespace WFNetLib.PacketProc
             else
             {
                 txbuffer = new byte[CP1616PacketHead.HEAD_SIZE+ 2];
-                txbuffer[0] = 0x16;
-                txbuffer[1] = 0x16;
-                txbuffer[2] = BytesOP.GetHighByte(addr);
-                txbuffer[3] = BytesOP.GetLowByte(addr);
-                txbuffer[4] = com;
-                txbuffer[5] = 0x00;
-                txbuffer[6] = 0x00;
+                txbuffer[nIndex++] = 0x16;
+                txbuffer[nIndex++] = 0x16;
+                if (CP1616PacketHead.Addr_SIZE == 2)
+                {
+                    txbuffer[nIndex++] = BytesOP.GetHighByte(addr);
+                    txbuffer[nIndex++] = BytesOP.GetLowByte(addr);
+                }
+                else if (CP1616PacketHead.Addr_SIZE == 1)
+                {
+                    txbuffer[nIndex++] = BytesOP.GetLowByte(addr);
+                }
+                txbuffer[nIndex++] = com;
+                if (CP1616PacketHead.DataLen_SIZE == 2)
+                {
+                    txbuffer[nIndex++] = 0;
+                    txbuffer[nIndex++] = 0;
+                }
+                else
+                {
+                    txbuffer[nIndex++] = 0;
+                }
                 txbuffer[CP1616PacketHead.HEAD_SIZE] = Verify.GetVerify_byteSum(txbuffer, CP1616PacketHead.HEAD_SIZE);
                 txbuffer[CP1616PacketHead.HEAD_SIZE + 1] = 0x0d;
             }            
@@ -96,7 +129,19 @@ namespace WFNetLib.PacketProc
             if(RxCount<CP1616PacketHead.HEAD_SIZE)
             {
                 Header.Data[RxCount++]=rx;
-                if(RxCount==1)
+                if (RxCount == CP1616PacketHead.HEAD_SIZE)//判断帧长度
+                {
+                    if (CP1616PacketHead.DataLen_SIZE == 2)
+                    {
+                        Header.Len = BytesOP.MakeShort(Header.Data[CP1616PacketHead.DataLen_SIZE - 2], Header.Data[CP1616PacketHead.DataLen_SIZE-1]);                        
+                    }
+                    else
+                    {
+                        Header.Len = Header.Data[CP1616PacketHead.DataLen_SIZE - 1];
+                    }
+                    Data = new byte[Header.Len + 2];
+                }
+                else if(RxCount==1)
                 {
                     if(Header.Data[0]!=0x16)
                     {
@@ -110,20 +155,34 @@ namespace WFNetLib.PacketProc
                         RxCount=0;
                     }
                 }
-                else if(RxCount==4)
+                else if (RxCount == (2 + CP1616PacketHead.Addr_SIZE) && CP1616PacketHead.Addr_SIZE!=0)//判断地址
                 {
-                    Header.RxAddr=BytesOP.MakeShort(Header.Data[2],Header.Data[3]);
-                    if(NeedAddr!=0xffff)
+                    if (CP1616PacketHead.Addr_SIZE == 1)
                     {
-                        if((Header.RxAddr!=0xffff)&&(Header.RxAddr!=NeedAddr))
+                        Header.RxAddr = Header.Data[2];
+                        if (NeedAddr != 0xff)
                         {
-                            RxCount=0;
+                            if ((Header.RxAddr != 0xff) && (Header.RxAddr != NeedAddr))
+                            {
+                                RxCount = 0;
+                            }
+                        }
+                    }
+                    else if (CP1616PacketHead.Addr_SIZE == 2)
+                    {
+                        Header.RxAddr = BytesOP.MakeShort(Header.Data[2], Header.Data[3]);
+                        if (NeedAddr != 0xffff)
+                        {
+                            if ((Header.RxAddr != 0xffff) && (Header.RxAddr != NeedAddr))
+                            {
+                                RxCount = 0;
+                            }
                         }
                     }
                 }
-                else if(RxCount==5)
+                else if (RxCount == (2 + CP1616PacketHead.Addr_SIZE+CP1616PacketHead.CommandLen_SIZE))//命令字判断
                 {
-                    Header.Command=Header.Data[4];
+                    Header.Command = Header.Data[2 + CP1616PacketHead.Addr_SIZE];
                     if(NeedCommand!=0xff)
                     {
                         if(Header.Command!=NeedCommand)
@@ -131,11 +190,6 @@ namespace WFNetLib.PacketProc
                             RxCount=0;
                         }
                     }
-                }
-                else if(RxCount==7)
-                {
-                    Header.Len=BytesOP.MakeShort(Header.Data[5],Header.Data[6]);
-                    Data=new byte[Header.Len+2];
                 }
             }
             else
