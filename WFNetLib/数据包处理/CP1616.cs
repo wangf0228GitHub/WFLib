@@ -133,11 +133,11 @@ namespace WFNetLib.PacketProc
                 {
                     if (CP1616PacketHead.DataLen_SIZE == 2)
                     {
-                        Header.Len = BytesOP.MakeShort(Header.Data[CP1616PacketHead.DataLen_SIZE - 2], Header.Data[CP1616PacketHead.DataLen_SIZE-1]);                        
+                        Header.Len = BytesOP.MakeShort(Header.Data[CP1616PacketHead.HEAD_SIZE - 2], Header.Data[CP1616PacketHead.HEAD_SIZE - 1]);                        
                     }
                     else
                     {
-                        Header.Len = Header.Data[CP1616PacketHead.DataLen_SIZE - 1];
+                        Header.Len = Header.Data[CP1616PacketHead.HEAD_SIZE - 1];
                     }
                     Data = new byte[Header.Len + 2];
                 }
@@ -205,6 +205,11 @@ namespace WFNetLib.PacketProc
                         s1 = (byte)(s1 + s2);
                         if (s1 == Data[Data.Length - 2])
                             return true;
+                        else
+                        {
+                            RxCount = 0;
+                            return false;
+                        }
                     }
                     else
                     {

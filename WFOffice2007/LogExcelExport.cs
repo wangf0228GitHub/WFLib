@@ -27,12 +27,12 @@ namespace WFOffice2007
             }
             ExcelEx.ExcelExportProc();
         }
-        private bool ExcelWorkbookCallbackProc(Workbook wBook,int index)
+        private bool ExcelWorkbookCallbackProc(Workbook wBook, int sheetIndex, int itemIndex)
         {
             Worksheet wSheet;
             wSheet = (Worksheet)wBook.Worksheets[1];
             Range dr;
-            if(index==-1)
+            if(itemIndex==-1)
             {                
                 for (int i = 0; i < wBook.Worksheets.Count - 1; i++)
                 {
@@ -51,7 +51,7 @@ namespace WFOffice2007
                 dr.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.DarkOrange);
                 dr.Interior.Pattern = XlPattern.xlPatternSolid;
             }
-            else if(index==int.MaxValue)
+            else if(itemIndex==int.MaxValue)
             {
                 dr = wSheet.get_Range("A1", "F" + (dgv.Rows.Count + 1).ToString());
                 dr.Columns.AutoFit();

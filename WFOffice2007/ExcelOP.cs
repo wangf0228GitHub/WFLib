@@ -12,15 +12,24 @@ namespace WFOffice2007
     {        
         public int Count = 0;        
         WaitingProc wp;
-        public delegate bool ExcelWorkbookCallback(Workbook wBook,int index);
+        public int SheetIndex;
+        public int SheetCount;
+        public delegate bool ExcelWorkbookCallback(Workbook wBook,int sheetIndex,int itemIndex);
         public ExcelWorkbookCallback ExcelWorkbookCallbackProc;
+        public ExcelExport(int count,int sheetCount)
+        {
+            Count = count;
+            SheetCount = sheetCount;
+        }
         public ExcelExport(int count)
         {
             Count = count;
+            SheetCount = 1;
         }
         public ExcelExport()
         {
             Count = -1;
+            SheetCount = 1;
         }
         public void ExcelExportProc()
         {
@@ -37,67 +46,88 @@ namespace WFOffice2007
             WaitingProcFunc wpf = new WaitingProcFunc(Proc);
             wp = new WFNetLib.WaitingProc();
             string strTitle = "数据导出到Excel中";
+            SheetIndex = 1;
             wp.Execute(wpf, strTitle, WFNetLib.WaitingType.With_ConfirmCancel, "确定要取消么？");
         }
-        public int SheetCount;
         private void Proc(object LockWatingThread)
-        {
+        {            
             Microsoft.Office.Interop.Excel.Application app = new Microsoft.Office.Interop.Excel.Application();
             try
             {
                 app.Visible = false;
                 Workbook wBook = app.Workbooks.Add(true);
-                wp.SetCursorStyle(Cursors.Default);
-                ExcelWorkbookCallbackProc(wBook, -1);//用于回调函数执行列标题定义操作
-                int percent = 0;
-                if (Count == -1)
+                Worksheet wSheet;
+                for (int i = 0; i < wBook.Worksheets.Count - 1; i++)
                 {
-                    Count = 0;
-                    while(true)
+                    wSheet = (Worksheet)wBook.Worksheets[i + 1];
+                    wSheet.Delete();
+                }
+                for (int i = 0; i < SheetCount - 1; i++)
+                {
+                    wBook.Worksheets.Add();
+                }
+                wp.SetCursorStyle(Cursors.Default);
+                int percent = 0;
+                wp.SetProcessBar(percent);
+                while(SheetIndex<=SheetCount)
+                {                 
+                    ExcelWorkbookCallbackProc(wBook, SheetIndex, -1);//用于回调函数执行列标题定义操作                     
+                    if (Count == -1)
                     {
-                        percent++;
-                        if (percent == 10000)
-                            percent = 0;
-                        wp.SetProcessBar(percent / 100);
-                        lock (LockWatingThread)
+                        int itemIndex=0;
+                        while (true)
                         {
-                            if (!ExcelWorkbookCallbackProc(wBook, Count++))
-                                break;
-                            wp.SetProcessBar(100);
-                            if (Count > 65530)
+                            percent++;
+                            if (percent == 10000)
+                                percent = 0;
+                            wp.SetProcessBar(percent / 100);
+                            lock (LockWatingThread)
                             {
-                                MessageBox.Show("条目过多，只导出前65530条");
-                                break;
+                                if (!ExcelWorkbookCallbackProc(wBook, SheetIndex, itemIndex++))
+                                {                                    
+                                    break;
+                                }
+                                if (itemIndex > 65530)
+                                {
+//                                     MessageBox.Show("条目过多，只导出前65530条");
+//                                     break;
+                                    break;
+                                }
+                                
+                            }
+                            if (wp.HasBeenCancelled())
+                            {
+                                app.DisplayAlerts = false;
+                                app.Quit();
+                                return;
                             }
                         }
-                        if (wp.HasBeenCancelled())
-                        {
-                            app.DisplayAlerts = false;
-                            app.Quit();
-                            return;
-                        }
                     }
-                }
-                else
-                {
-                    for (int i = 0; i < Count; i++)
+                    else
                     {
-                        percent++;
-                        wp.SetProcessBar(percent*100 / Count);
-                        lock (LockWatingThread)
+                        for (int i = 0; i < Count; i++)
                         {
-                            if(!ExcelWorkbookCallbackProc(wBook, i))
-                                break;
+                            percent++;
+                            wp.SetProcessBar(percent * 100 / Count/SheetCount);
+                            lock (LockWatingThread)
+                            {
+                                if (!ExcelWorkbookCallbackProc(wBook, SheetIndex, i))
+                                {
+                                    break;
+                                }
+                            }
+                            if (wp.HasBeenCancelled())
+                            {
+                                app.DisplayAlerts = false;
+                                app.Quit();
+                                return;
+                            }
                         }
-                        if (wp.HasBeenCancelled())
-                        {
-                            app.DisplayAlerts = false;
-                            app.Quit();
-                            return;
-                        }
-                    }
+                    }                    
+                    ExcelWorkbookCallbackProc(wBook,SheetIndex,int.MaxValue); //全部导出完成，用于回调函数执行整体界面设定
+                    SheetIndex++;
                 }
-                ExcelWorkbookCallbackProc(wBook, int.MaxValue); //全部导出完成，用于回调函数执行整体界面设定
+                wp.SetProcessBar(100);
                 app.Visible = true;
                 app.WindowState = XlWindowState.xlMaximized;
             }
@@ -116,9 +146,9 @@ namespace WFOffice2007
         //WaitingProc wp;
         OpenFileDialog openFileDialog;
         string SheetName;
-        public ExcelImport(bool bSelfopen,string sheetName)
+        public ExcelImport(bool _bSelfopen,string sheetName)
         {
-            bSelfOpen = bSelfopen;
+            bSelfOpen = _bSelfopen;
             openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx";
             openFileDialog.ReadOnlyChecked = true;
@@ -140,9 +170,9 @@ namespace WFOffice2007
                     if (System.IO.Path.GetExtension(openFileDialog.FileName).ToUpper() == ".XLSX")
                     {
                         if (hasTitle)
-                            strConn = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + openFileDialog.FileName + ";Extended Properties=\"Excel 12.0;HDR=YES\"";
+                            strConn = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + openFileDialog.FileName + ";Extended Properties=\"Excel 12.0;HDR=YES;IMEX=1\"";
                         else
-                            strConn = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + openFileDialog.FileName + ";Extended Properties=\"Excel 12.0;HDR=NO\"";
+                            strConn = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + openFileDialog.FileName + ";Extended Properties=\"Excel 12.0;HDR=NO;IMEX=1\"";
                         //IS_EXCEL_2007 = true;
                     }  
                     OleDbConnection OleConn = new OleDbConnection(strConn);
