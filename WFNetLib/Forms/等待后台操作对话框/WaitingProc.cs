@@ -5,6 +5,40 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
+/*
+1)声明等待窗体变量
+WaitingProc wp;
+2）初始化等待函数
+wp = new WaitingProc();
+WaitingProcFunc wpf=new WaitingProcFunc(WaitingPCIE);
+wp.Execute(wpf,"等待连接采集卡",WaitingType.With_ConfirmCancel,"未连接到采集卡，取消将退出软件，是否取消？");
+
+3）等待函数
+void WaitingPCIE(object LockWatingThread)
+{
+    while(true)
+    {
+        pCH368 = CH368.CH367mOpenDevice(1, FALSE, TRUE, 0x00);
+        if (pCH368 != (IntPtr)(-1))
+        {
+            return;
+        }
+        Thread.Sleep(1000);                
+        lock (LockWatingThread)
+        {
+            wp.SetProcessBarPerformStep();
+            if (wp.HasBeenCancelled())
+            {
+                this.Invoke((EventHandler)(delegate
+                {
+                    this.Close();                           
+                }));
+                return;
+            }
+        }
+    }
+}
+*/
 namespace WFNetLib
 {
     public delegate void WaitingProcFunc(object LockWatingThread);

@@ -32,6 +32,8 @@ namespace WFNetLib
         }        
         public void ExternSetCursorStyle(Cursor c)
         {
+            if (bCancelled)
+                return;
             while (!this.IsHandleCreated) ;
             this.Invoke(new SetCursorStyleDelegate(SetCursorStyleDelegateProc), c);
         }
@@ -45,6 +47,8 @@ namespace WFNetLib
         }
         public void ExternSetTitle(string str)
         {
+            if (bCancelled)
+                return;
             while (!this.IsHandleCreated) ;
             this.Invoke(new SetTitleDelegate(SetTitleDelegateProc), str);
         }
@@ -59,6 +63,8 @@ namespace WFNetLib
         }
         public void ExternSetProcessBarRange(int min, int max)
         {
+            if (bCancelled)
+                return;
             while (!this.IsHandleCreated) ;
             this.Invoke(new SetProcessBarRangeDelegate(SetProcessBarRangeDelegateProc), min,max);
         }
@@ -78,6 +84,8 @@ namespace WFNetLib
         }
         public void ExternSetProcessBar(int i)
         {
+            if (bCancelled)
+                return;
             while (!this.IsHandleCreated) ;
             this.Invoke(new SetProcessBarDelegate(SetProcessBarDelegateProc), i);            
         }
@@ -91,6 +99,8 @@ namespace WFNetLib
         }
         public void ExternSetProcessBarPerformStep()
         {
+            if (bCancelled)
+                return;
             while (!this.IsHandleCreated) ;
             this.Invoke(new SetProcessBarPerformStepDelegate(SetProcessBarPerformStepDelegateProc));
         }
@@ -106,6 +116,8 @@ namespace WFNetLib
         }
         public void ExternClose()
         {
+            if (bCancelled)
+                return;
             while (!this.IsHandleCreated) ;
             this.Invoke(new CloseDelegate(CloseDelegateProc));
         }
