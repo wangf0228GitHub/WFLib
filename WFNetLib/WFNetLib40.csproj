@@ -266,9 +266,9 @@
     <Compile Include="WinAPI\DataStruct.cs" />
     <Compile Include="WinAPI\Win32API.cs" />
     <Compile Include="WinAPI\WinCEAPI.cs" />
-    <Compile Include="算法\XML\OperateXml.cs" />
-    <Compile Include="算法\XML\OperateXmlMethod.cs" />
-    <Compile Include="算法\XML\XmlTransform.cs" />
+    <Compile Include="XML\OperateXml.cs" />
+    <Compile Include="XML\OperateXmlMethod.cs" />
+    <Compile Include="XML\XmlTransform.cs" />
     <Compile Include="联合体\UnionType.cs" />
     <Compile Include="通信协议\Modbus\ASCII_Master.cs" />
     <Compile Include="通信协议\Net\TCPPacket.cs" />
