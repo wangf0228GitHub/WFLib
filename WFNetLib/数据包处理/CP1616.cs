@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using WFNetLib;
 using System.IO.Ports;
+using System.Diagnostics;
 
 namespace WFNetLib.PacketProc
 {
@@ -19,6 +20,8 @@ namespace WFNetLib.PacketProc
         public static Int32 DataLen_SIZE = 2;
         public static Int32 CommandLen_SIZE = 1;
         public static Int32 HEAD_SIZE = 7;
+        public static bool bIsDebugOut;
+        public static bool bCheckVerify=true;
         public UInt16 RxAddr;
         public byte Command;
         public UInt16 Len = 0;
@@ -146,6 +149,10 @@ namespace WFNetLib.PacketProc
                     if(Header.Data[0]!=0x16)
                     {
                         RxCount=0;
+                        if (CP1616PacketHead.bIsDebugOut)
+                        {
+                            Debug.WriteLine(WFNetLib.StringFunc.StringsFunction.byteToHexStr(Header.Data, " "));
+                        }
                     }
                 }
                 else if(RxCount==2)
@@ -153,6 +160,10 @@ namespace WFNetLib.PacketProc
                     if(Header.Data[1]!=0x16)
                     {
                         RxCount=0;
+                        if (CP1616PacketHead.bIsDebugOut)
+                        {
+                            Debug.WriteLine(WFNetLib.StringFunc.StringsFunction.byteToHexStr(Header.Data, " "));
+                        }
                     }
                 }
                 else if (RxCount == (2 + CP1616PacketHead.Addr_SIZE) && CP1616PacketHead.Addr_SIZE!=0)//判断地址
@@ -165,6 +176,10 @@ namespace WFNetLib.PacketProc
                             if ((Header.RxAddr != 0xff) && (Header.RxAddr != NeedAddr))
                             {
                                 RxCount = 0;
+                                if (CP1616PacketHead.bIsDebugOut)
+                                {
+                                    Debug.WriteLine(WFNetLib.StringFunc.StringsFunction.byteToHexStr(Header.Data, " "));
+                                }
                             }
                         }
                     }
@@ -176,6 +191,10 @@ namespace WFNetLib.PacketProc
                             if ((Header.RxAddr != 0xffff) && (Header.RxAddr != NeedAddr))
                             {
                                 RxCount = 0;
+                                if (CP1616PacketHead.bIsDebugOut)
+                                {
+                                    Debug.WriteLine(WFNetLib.StringFunc.StringsFunction.byteToHexStr(Header.Data, " "));
+                                }
                             }
                         }
                     }
@@ -187,6 +206,10 @@ namespace WFNetLib.PacketProc
                     {
                         if(Header.Command!=NeedCommand)
                         {
+                            if (CP1616PacketHead.bIsDebugOut)
+                            {
+                                Debug.WriteLine(WFNetLib.StringFunc.StringsFunction.byteToHexStr(Header.Data, " "));                                
+                            }
                             RxCount=0;
                         }
                     }
@@ -200,20 +223,36 @@ namespace WFNetLib.PacketProc
                 {
                     if (Data[Data.Length - 1] == 0x0d)
                     {
-                        byte s1 = Verify.GetVerify_byteSum(Header.Data);
-                        byte s2 = Verify.GetVerify_byteSum(Data, Data.Length - 2);
-                        s1 = (byte)(s1 + s2);
-                        if (s1 == Data[Data.Length - 2])
-                            return true;
-                        else
+                        if (CP1616PacketHead.bCheckVerify)
                         {
-                            RxCount = 0;
-                            return false;
+                            byte s1 = Verify.GetVerify_byteSum(Header.Data);
+                            byte s2 = Verify.GetVerify_byteSum(Data, Data.Length - 2);
+                            s1 = (byte)(s1 + s2);
+                            if (s1 == Data[Data.Length - 2])
+                                return true;
+                            else
+                            {
+                                RxCount = 0;
+                                if(CP1616PacketHead.bIsDebugOut)
+                                {
+                                    Debug.Write(WFNetLib.StringFunc.StringsFunction.byteToHexStr(Header.Data, " "));
+                                    Debug.WriteLine(WFNetLib.StringFunc.StringsFunction.byteToHexStr(Data, " "));
+                                }
+                                return false;
+                            }
                         }
+                        else
+                            return true;
                     }
                     else
                     {
                         RxCount = 0;
+                        if (CP1616PacketHead.bIsDebugOut)
+                        {
+                            Debug.Write(DateTime.Now.ToString("HH:mm:ss:ffff")+":");
+                            Debug.Write(WFNetLib.StringFunc.StringsFunction.byteToHexStr(Header.Data, " "));
+                            Debug.WriteLine(WFNetLib.StringFunc.StringsFunction.byteToHexStr(Data, " "));
+                        }
                         return false;
                     }
                 }
@@ -261,6 +300,30 @@ namespace WFNetLib.PacketProc
                 retry--;
             }
             return null;
+        }
+
+
+
+        public static void CP1616ComSend(ref SerialPort serialPort, byte com, ushort addr, uint b)
+        {
+            ushort b1, b2;
+            b1 = BytesOP.GetHighShort(b);
+            b2 = BytesOP.GetLowShort(b);
+            CP1616ComSend(ref serialPort, com, addr, new byte[4] { BytesOP.GetHighByte(b1), BytesOP.GetLowByte(b1), BytesOP.GetHighByte(b2), BytesOP.GetLowByte(b2) });
+        }
+        public static void CP1616ComSend(ref SerialPort serialPort, byte com, ushort addr, ushort b)
+        {
+            CP1616ComSend(ref serialPort, com, addr, new byte[2] { BytesOP.GetHighByte(b), BytesOP.GetLowByte(b) });
+        }
+        public static void CP1616ComSend(ref SerialPort serialPort, byte com, ushort addr, byte b)
+        {
+            CP1616ComSend(ref serialPort, com, addr, new byte[1] { b });
+        }
+        public static void CP1616ComSend(ref SerialPort serialPort, byte com, ushort addr, byte[] data)
+        {
+            byte[] tx;
+            tx = CP1616Packet.MakeCP1616Packet(com, addr, data);
+            serialPort.Write(tx, 0, tx.Length);            
         }
     }
 }
