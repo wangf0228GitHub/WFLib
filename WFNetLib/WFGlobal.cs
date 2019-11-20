@@ -185,7 +185,11 @@ namespace WFNetLib
         {
             MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
-        
+
+        public static bool OpenSerialPort(ref SerialPort mySerialPort)
+        {
+            return OpenSerialPort(ref mySerialPort, "指定");
+        }
         public static bool OpenSerialPort(ref SerialPort mySerialPort,string name)
         {
             while (true)
@@ -197,7 +201,7 @@ namespace WFNetLib
                 }
                 catch (System.Exception ex)
                 {
-                    if (MessageBox.Show(name+"的串口无法打开:" + ex.Message + "，是否重试?", "错误", MessageBoxButtons.RetryCancel) == DialogResult.Cancel)
+                    if (MessageBox.Show(name+"的串口无法打开:" + ex.Message + "是否重试?", "错误", MessageBoxButtons.RetryCancel) == DialogResult.Cancel)
                         return false;
                 }
             }
@@ -214,7 +218,7 @@ namespace WFNetLib
                 }
                 catch (System.Exception ex)
                 {
-                    if (MessageBox.Show(owner,name + "的串口无法打开:" + ex.Message + "，是否重试?", "错误", MessageBoxButtons.RetryCancel) == DialogResult.Cancel)
+                    if (MessageBox.Show(owner,name + "的串口无法打开:" + ex.Message + "是否重试?", "错误", MessageBoxButtons.RetryCancel) == DialogResult.Cancel)
                         return false;
                 }
             }
