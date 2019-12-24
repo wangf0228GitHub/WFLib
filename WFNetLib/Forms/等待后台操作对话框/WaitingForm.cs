@@ -96,6 +96,8 @@ namespace WFNetLib
         private void SetProcessBarPerformStepDelegateProc()
         {
             progressBar1.PerformStep();
+            if (progressBar1.Value >= progressBar1.Maximum)
+                progressBar1.Value = progressBar1.Minimum;
         }
         public void ExternSetProcessBarPerformStep()
         {

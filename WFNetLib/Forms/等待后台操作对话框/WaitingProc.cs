@@ -103,6 +103,52 @@ namespace WFNetLib
         public void SetProcessBarPerformStep()
         {
             form.ExternSetProcessBarPerformStep();
+        }        
+    }
+    public class WaitSometingForm
+    {
+        static public bool bGenerateSometing;
+        static bool bWaitTimeOut;
+        static WaitingProc wp;
+        static int waitStep;
+        static int waitCount;
+        public static bool WaitSometing(int _waitStep, int _waitCount,string strTitle)
+        {
+            waitStep = _waitStep;
+            waitCount = _waitCount;
+            wp = new WaitingProc();
+            wp.MaxProgress = waitCount;
+            WaitingProcFunc wpf1 = new WaitingProcFunc(WaitSometingProc);
+            wp.Execute(wpf1, strTitle, WaitingType.None, "");
+            if (bWaitTimeOut)
+                return false;
+            return true;
+        }
+        public static void WaitSometing_Init()
+        {
+            bGenerateSometing = false;
+            bWaitTimeOut = false;
+        }
+        static void WaitSometingProc(object LockWatingThread)
+        {
+            while (true)
+            {
+                Thread.Sleep(waitStep);
+                lock (LockWatingThread)
+                {
+                    if (bGenerateSometing)
+                    {
+                        return;
+                    }
+                    if (waitCount == 0)
+                    {
+                        bWaitTimeOut = true;
+                        return;
+                    }
+                    waitCount--;                    
+                    wp.SetProcessBarPerformStep();
+                }
+            }
         }
     }
 }
