@@ -12,10 +12,10 @@ namespace WFNetLib.PID
         {
             pidParam=new PIDParam();
         }
-        public float PIDCalc(float pv)
+        public double PIDCalc(double pv)
         {
-            float err;   
-            float pterm, dterm, result;   
+            double err;   
+            double pterm, dterm, result;   
             pidParam.pv=pv;
             err = (pidParam.sp) - (pidParam.pv);
             if (Math.Abs(err) > pidParam.deadband)
@@ -47,14 +47,14 @@ namespace WFNetLib.PID
     }
     public class PIDParam
     {
-        public float pv; //当前值
-        public float sp; //目标值
-        public float integral;//积分结果
-        public float pgain;//比例
-        public float igain;//积分
-        public float dgain;//微分
-        public float deadband;//无需调节的范围
-        public float last_error;//上次偏差
+        public double pv; //当前值
+        public double sp; //目标值
+        public double integral;//积分结果
+        public double pgain;//比例
+        public double igain;//积分
+        public double dgain;//微分
+        public double deadband;//无需调节的范围
+        public double last_error;//上次偏差
         public PIDParam()
         {
             pv = 0;
