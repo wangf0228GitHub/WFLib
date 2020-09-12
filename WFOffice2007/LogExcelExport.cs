@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
 
-namespace WFOffice2007
+namespace WFOffice
 {
     public class LogExcelExport
     {

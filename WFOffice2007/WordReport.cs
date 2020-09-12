@@ -2,7 +2,7 @@
 using Microsoft.Office.Interop.Word;
 using System.Runtime.InteropServices;
 
-namespace WFOffice2007
+namespace WFOffice
 {
 // 1.首先需要载入模板
 // Report report =new Report();

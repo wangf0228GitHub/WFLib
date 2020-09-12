@@ -6,7 +6,7 @@ using System.Data;
 using Microsoft.Office.Interop.Excel;
 using WFNetLib;
 
-namespace WFOffice2007
+namespace WFOffice
 {
     public class ExcelExport
     {        
@@ -14,6 +14,7 @@ namespace WFOffice2007
         WaitingProc wp;
         public int SheetIndex;
         public int SheetCount;
+        public bool bShowExcel=true;
         public delegate bool ExcelWorkbookCallback(Workbook wBook,int sheetIndex,int itemIndex);
         public ExcelWorkbookCallback ExcelWorkbookCallbackProc;
         public ExcelExport(int count,int sheetCount)
@@ -128,8 +129,15 @@ namespace WFOffice2007
                     SheetIndex++;
                 }
                 wp.SetProcessBar(100);
-                app.Visible = true;
-                app.WindowState = XlWindowState.xlMaximized;
+                if(bShowExcel)
+                {
+                    app.Visible = true;
+                    app.WindowState = XlWindowState.xlMaximized;
+                }
+                else
+                {
+                    app.Quit();
+                }
             }
             catch (System.Exception ex)
             {
