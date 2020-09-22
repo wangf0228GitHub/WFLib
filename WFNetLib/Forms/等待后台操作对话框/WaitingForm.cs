@@ -118,8 +118,8 @@ namespace WFNetLib
         }
         public void ExternClose()
         {
-            if (bCancelled)
-                return;
+//             if (bCancelled)
+//                 return;
             while (!this.IsHandleCreated) ;
             this.Invoke(new CloseDelegate(CloseDelegateProc));
         }

@@ -5,23 +5,83 @@ using System.Text;
 
 namespace WFNetLib.PID
 {
-    public class PID
+    public class incrementPID
     {
-        public PIDParam pidParam;
-        public PID()
+        public double uk; //输出值
+        public double sp; //目标值
+        public double pgain;//比例
+        public double igain;//积分
+        public double dgain;//微分
+        public double deadband;//无需调节的范围
+        public double ek1;//上次偏差
+        public double ek2;//上次偏差
+        public bool bOk;
+        public incrementPID()
         {
-            pidParam=new PIDParam();
+            sp = 0;
+            pgain = 0;
+            igain = 0;
+            dgain = 0;
+            deadband = 0;
+            ek1 = 0;
+            ek2 = 0;
+            bOk = false;
+        }
+        public void ResetPIDParam()
+        {
+            ek1 = 0;
+            ek2 = 0;
+            bOk = false;
         }
         public double PIDCalc(double pv)
         {
-            double err;   
-            double pterm, dterm, result;   
-            pidParam.pv=pv;
-            err = (pidParam.sp) - (pidParam.pv);
-            if (Math.Abs(err) > pidParam.deadband)
+            double ek;  
+            ek = sp - pv;
+            if (Math.Abs(ek) > deadband)
             {
-                pterm = pidParam.pgain * err;
-                pidParam.integral += pidParam.igain * err;
+                bOk = false;
+                uk = uk + pgain * (ek - ek1) + igain * ek + dgain * (ek - 2 * ek1 + ek2);
+                uk = uk + pgain * (ek - ek1);// 只调节P
+                uk = uk + pgain * (ek - ek1) + igain * ek;//只调节PI                
+            }
+            else
+                bOk = true;
+            ek2 = ek1;
+            ek1 = ek;
+            return uk; 
+        }
+    }
+    public class positionPID
+    {
+        //public double pv; //当前值
+        public bool bOk;
+        public double sp; //目标值
+        public double integral;//积分结果
+        public double pgain;//比例
+        public double igain;//积分
+        public double dgain;//微分
+        public double deadband;//无需调节的范围
+        public double last_error;//上次偏差
+        public positionPID()
+        {
+            sp = 0;
+            integral = 0;
+            pgain = 0;
+            igain = 0;
+            dgain = 0;
+            deadband = 0;
+            last_error = 0;
+        }
+        public double PIDCalc(double pv)
+        {
+            double err;
+            double pterm, dterm, result;
+            err = sp - pv;
+            if (Math.Abs(err) > deadband)
+            {
+                bOk = false;
+                pterm = pgain * err;
+                integral += igain * err;
                 //                 if (pterm > 100 || pterm < -100)   
                 //                 {   
                 //                     pidParam.integral = 0;   //偏差过大不进行I调节
@@ -36,35 +96,16 @@ namespace WFNetLib.PID
                 //                     else if (pidParam.integral < 0.0) 
                 //                         pidParam.integral = 0.0f;   
                 //                 }   
-                dterm = (err - pidParam.last_error) * pidParam.dgain;
-                result = pterm + pidParam.integral + dterm;
+                dterm = (err - last_error) * dgain;
+                result = pterm + integral + dterm;
             }
             else
+            {
+                bOk = true;
                 result = 0;//pidParam.integral;   
-            pidParam.last_error = err;   
-            return (result); 
+            }
+            last_error = err;
+            return (result);
         }
     }
-    public class PIDParam
-    {
-        public double pv; //当前值
-        public double sp; //目标值
-        public double integral;//积分结果
-        public double pgain;//比例
-        public double igain;//积分
-        public double dgain;//微分
-        public double deadband;//无需调节的范围
-        public double last_error;//上次偏差
-        public PIDParam()
-        {
-            pv = 0;
-            sp = 0;
-            integral = 0;
-            pgain = 0;
-            igain = 0;
-            dgain = 0;
-            deadband = 0;
-            last_error = 0;
-        }
-    };   
 }
