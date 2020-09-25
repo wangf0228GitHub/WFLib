@@ -53,7 +53,7 @@ namespace WFNetLib.PID
     }
     public class positionPID
     {
-        //public double pv; //当前值
+        public double uk; //当前值
         public bool bOk;
         public double sp; //目标值
         public double integral;//积分结果
@@ -64,12 +64,18 @@ namespace WFNetLib.PID
         public double last_error;//上次偏差
         public positionPID()
         {
+            uk = 0;
             sp = 0;
             integral = 0;
             pgain = 0;
             igain = 0;
             dgain = 0;
             deadband = 0;
+            last_error = 0;
+        }
+        public void ResetPIDParam()
+        {
+            integral = 0;
             last_error = 0;
         }
         public double PIDCalc(double pv)
@@ -98,11 +104,12 @@ namespace WFNetLib.PID
                 //                 }   
                 dterm = (err - last_error) * dgain;
                 result = pterm + integral + dterm;
+                uk = result;
             }
             else
             {
                 bOk = true;
-                result = 0;//pidParam.integral;   
+                result = uk;//pidParam.integral;   
             }
             last_error = err;
             return (result);
