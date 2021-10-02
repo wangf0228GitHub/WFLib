@@ -55,8 +55,15 @@ namespace WFNetLib
         private WaitingForm form;
         public int MaxProgress = 100;
         public int MinProgress = 0;
+        public IWin32Window owner=null;
         public WaitingProc()
         {
+            MaxProgress = 100;
+            MinProgress = 0;
+        }
+        public WaitingProc(IWin32Window _owner)
+        {
+            owner = _owner;
             MaxProgress = 100;
             MinProgress = 0;
         }
@@ -71,7 +78,10 @@ namespace WFNetLib
             WaitingThread = new Thread(new ThreadStart(Waiting));
             WaitingThread.Name = "等待执行线程";
             WaitingThread.Start();
-            form.ShowDialog();
+            if (owner == null)
+                form.ShowDialog();
+            else
+                form.ShowDialog(owner);
             return !form.bCancelled;
         }
         private void Waiting()

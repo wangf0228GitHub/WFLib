@@ -163,6 +163,7 @@
     <Compile Include="JsonSerializeHelper.cs" />
     <Compile Include="PID\PID.cs" />
     <Compile Include="Strings\StringEncrypt.cs" />
+    <Compile Include="UDP\UDPService.cs" />
     <Compile Include="外部程序控制.cs" />
     <Compile Include="SerializeHelper.cs" />
     <Compile Include="TCP\ClientContext.cs" />
