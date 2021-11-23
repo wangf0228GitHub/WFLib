@@ -75,7 +75,7 @@ namespace WFNetLib
             form.Text = Title;
             form.progressBar1.Minimum = MinProgress;
             form.progressBar1.Maximum = MaxProgress;
-            WaitingThread = new Thread(new ThreadStart(Waiting));
+            WaitingThread = new Thread(new ThreadStart(Waitting));
             WaitingThread.Name = "等待执行线程";
             WaitingThread.Start();
             if (owner == null)
@@ -84,11 +84,15 @@ namespace WFNetLib
                 form.ShowDialog(owner);
             return !form.bCancelled;
         }
-        private void Waiting()
+        private void Waitting()
         {
             Func(form.LockWatingThread);
             form.ReadyEvent.WaitOne();
             form.ExternClose();
+        }
+        public void ExitWatting()
+        {
+            form.bCancelled = true; 
         }
         public bool HasBeenCancelled()
         {
